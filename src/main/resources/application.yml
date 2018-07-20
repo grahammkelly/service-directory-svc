@@ -1,0 +1,14 @@
+# For demo purposes we use cloud versions of Mongo and RabbitMQ
+spring:
+
+  # mlab.com: server.product.travelport / changeit123!!!
+  data:
+    mongodb:
+      uri: mongodb://user:password123@ds137600.mlab.com:37600/persons
+
+  # cloudamqp.com: server.product.travelport@gmail.com / changeit!!!
+  rabbitmq:
+    host: duckbill.rmq.cloudamqp.com
+    username: atfeadmf
+    password: L1soAOkSmtPbQFvy08af47hec-I8_jcN
+    virtual-host: atfeadmf

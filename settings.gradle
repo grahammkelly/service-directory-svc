@@ -1,0 +1,9 @@
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    maven { url "http://nexus-build.int.mttnow.com/content/groups/mtt/" }
+    maven { url 'http://repo.spring.io/plugins-release' }
+  }
+}
+
+rootProject.name = 'system-team-java-demo'

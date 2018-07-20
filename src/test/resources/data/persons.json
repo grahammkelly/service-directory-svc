@@ -1,0 +1,23 @@
+[
+  {
+    "_class": "com.mttnow.system.team.model.Person",
+    "id": "1",
+    "firstName": "John",
+    "lastName": "Smith",
+    "age": 28
+  },
+  {
+    "_class": "com.mttnow.system.team.model.Person",
+    "id": "2",
+    "firstName": "Mary",
+    "lastName": "Addams",
+    "age": 45
+  },
+  {
+    "_class": "com.mttnow.system.team.model.Person",
+    "id": "3",
+    "firstName": "Paul",
+    "lastName": "Stanley",
+    "age": 30
+  }
+]

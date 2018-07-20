@@ -1,0 +1,47 @@
+plugins {
+  id 'groovy'
+  id 'org.springframework.boot' version '2.0.4.RELEASE'
+  id "com.mttnow.build" version '1.0.13'
+}
+
+group = 'com.mttnow.system.team'
+description = 'Demo of the System Team CI/CD process for a Spring Boot application written in Java with Groovy/Spock tests'
+
+sourceCompatibility = 8
+
+build {
+  sonarExclusions = ['**/Application.java,**/model/**']
+}
+
+ext['lombok.version'] = '1.16.20'
+
+ext {
+  autoConfigureVersion = "2.0.1"
+  testAutoConfigureVersion = "2.0.1"
+  rabbitAutoConfigureVersion = "1.0.0"
+
+  spockVersion = "1.2-groovy-2.4-SNAPSHOT"
+  spockCollaboratorVersion = "1.2.1"
+}
+
+dependencies {
+  compile "org.springframework.boot:spring-boot-starter-actuator"
+  compile "org.springframework.boot:spring-boot-starter-web"
+  compile "org.springframework.boot:spring-boot-starter-data-mongodb"
+  compile "org.springframework.boot:spring-boot-starter-amqp"
+
+  compile "org.projectlombok:lombok"
+
+  compile "com.mttnow.platform.spring.boot.auto.configure:platform-spring-boot-auto-configure:${autoConfigureVersion}"
+
+  testCompile "org.springframework.boot:spring-boot-starter-test"
+  testCompile "de.flapdoodle.embed:de.flapdoodle.embed.mongo"
+
+  testCompile "com.mttnow.platform.spring.boot.test.auto.configure:platform-spring-boot-test-auto-configure:${testAutoConfigureVersion}"
+  testCompile "com.mttnow.platform.spring.boot.test.auto.configure.rabbit:platform-spring-boot-test-auto-configure-rabbit:${rabbitAutoConfigureVersion}"
+
+  testCompile "org.codehaus.groovy:groovy"
+  testCompile "org.spockframework:spock-core:${spockVersion}"
+  testCompile "org.spockframework:spock-spring:${spockVersion}"
+  testCompile "com.blogspot.toomuchcoding:spock-subjects-collaborators-extension:${spockCollaboratorVersion}"
+}

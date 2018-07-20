@@ -1,0 +1,10 @@
+mtt:
+  test:
+    rabbit:
+      enable-queue-setup: true
+      enable-embedded-qpid: true
+  platform:
+    rabbitmq:
+      listener:
+        retry-count: 2
+        back-off-period: 1s

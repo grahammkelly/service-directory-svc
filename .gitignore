@@ -1,0 +1,17 @@
+*.DS_Store
+*.ipr
+*.iws
+.gradle
+.idea
+build
+out
+target
+.apt_generated
+.factorypath
+**/*.project
+**/*.classpath
+.metadata
+bin/
+tmp/
+local.properties
+.settings/
