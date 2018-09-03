@@ -1,19 +1,22 @@
 plugins {
-  id 'groovy'
+  id "org.jetbrains.kotlin.jvm" version "1.2.61"
+
+  id "groovy"
+
   id 'org.springframework.boot' version '2.0.4.RELEASE'
+  id "org.jetbrains.kotlin.plugin.spring" version "1.2.61"
+
   id "com.mttnow.build" version '1.0.13'
 }
 
 group = 'com.mttnow.system.team'
-description = 'Demo of the System Team CI/CD process for a Spring Boot application written in Java with Groovy/Spock tests'
+description = 'Demo of the System Team CI/CD process for a Spring Boot application written in Kotlin with Groovy/Spock tests'
 
-sourceCompatibility = 8
+sourceCompatibility = JavaVersion.VERSION_1_8
 
 build {
-  sonarExclusions = ['**/Application.java,**/model/**']
+  sonarExclusions = ['**/Application.*,**/model/**']
 }
-
-ext['lombok.version'] = '1.16.20'
 
 ext {
   autoConfigureVersion = "2.0.1"
@@ -25,14 +28,16 @@ ext {
 }
 
 dependencies {
+  compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
   compile "org.springframework.boot:spring-boot-starter-actuator"
   compile "org.springframework.boot:spring-boot-starter-web"
   compile "org.springframework.boot:spring-boot-starter-data-mongodb"
   compile "org.springframework.boot:spring-boot-starter-amqp"
 
-  compile "org.projectlombok:lombok"
-
   compile "com.mttnow.platform.spring.boot.auto.configure:platform-spring-boot-auto-configure:${autoConfigureVersion}"
+
+  compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.2")
 
   testCompile "org.springframework.boot:spring-boot-starter-test"
   testCompile "de.flapdoodle.embed:de.flapdoodle.embed.mongo"

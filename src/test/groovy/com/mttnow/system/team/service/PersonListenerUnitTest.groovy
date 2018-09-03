@@ -16,7 +16,8 @@ class PersonListenerUnitTest extends UnitTest {
   def "Should call save"() {
 
     given:
-    def person = new Person(firstName: "John")
+    //Person is now a kotlin class, cannot use Groovy named arguments
+    def person = new Person("", "John", "", 0)
 
     when:
     personListener.consume(person)

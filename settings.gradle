@@ -6,4 +6,4 @@ pluginManagement {
   }
 }
 
-rootProject.name = 'system-team-java-demo'
+rootProject.name = 'system-team-kotlin-demo'
