@@ -6,4 +6,4 @@ pluginManagement {
   }
 }
 
-rootProject.name = 'system-team-kotlin-demo'
+rootProject.name = 'service-directory'
