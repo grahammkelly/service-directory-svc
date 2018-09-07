@@ -19,6 +19,7 @@ build {
 }
 
 ext {
+  mttJsonObjectMapper = "1.3.0"
   autoConfigureVersion = "2.0.1"
   testAutoConfigureVersion = "2.0.1"
   rabbitAutoConfigureVersion = "1.0.1"
@@ -36,6 +37,7 @@ dependencies {
   compile "org.springframework.boot:spring-boot-starter-amqp"
 
   compile "com.mttnow.platform.spring.boot.auto.configure:platform-spring-boot-auto-configure:${autoConfigureVersion}"
+  compile "com.mttnow.common:json-object-mapper:${mttJsonObjectMapper}"
 
   compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.2")
 

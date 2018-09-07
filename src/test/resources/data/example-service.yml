@@ -1,0 +1,27 @@
+build:
+  pipeline: Jenkinsfile
+projectInfo:
+  type: service
+  displayName: Fluggle-bit flipper
+  desc: The Service to flip the fluggle-bit (Fluggle-bit flipper)
+  serviceCode: fbf
+  owner:
+    team: trip-assist
+    contact:
+      slack: team-tripassist
+      msteams:
+        name: TIE ART|Server
+        link: https://teams.microsoft.com/l/channel/19%3a96d089548a2d45ccafb621efe7d05f7a%40thread.skype/Server?groupId=c61703e8-be3b-47a1-895d-973eeffe54f8&tenantId=6416915b-6778-4c36-ba4f-e56ff64a8bb7
+      email: ada-server@travelport365.onmicrosoft.com
+  tags: ['pnr index', 'adapter', 'ada', 'receiver']
+  related:
+    dependsOn:
+    - pnrindex-converter
+    - itinerator-transformer-dispatcher
+    links:
+    - name: Viewtrip
+      link: 'https://viewtrip.travelport.com'
+    - name: PNR Index
+      link: 'https://mttnow.atlassian.net/wiki/spaces/TDP/pages/221905610/PNR+Index'
+    - name: Explanation of PNRs
+      link: 'https://mttnow.atlassian.net/wiki/spaces/TDP/pages/260966317/PNRs+Explained'
