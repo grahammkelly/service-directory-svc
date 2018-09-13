@@ -84,7 +84,9 @@ class ProjectApiController: MeasuringService() {
 
     val projects = svc.list()
     val projLinks = projects.map{
-       it.name to linkTo(methodOn(ProjectApiController::class.java).getProjectById(it.id)).withSelfRel().href!!
+      it.name to
+          linkTo(methodOn(ProjectApiController::class.java).getProject(it.name))
+              .withSelfRel().href.replace("/api", "")
     }.toMap()
 
     logger.info("Found ${projLinks.size} projects")
@@ -109,7 +111,9 @@ class ProjectApiController: MeasuringService() {
     val returnVal = mapOf(
         Pair("id", project.id.toString()),
         Pair("name", project.name),
-        Pair("link", linkTo(methodOn(ProjectApiController::class.java).getProjectById(project.id)).withSelfRel().href)
+        Pair("link",
+            linkTo(methodOn(ProjectApiController::class.java).getProject(project.name))
+                .withSelfRel().href.replace("/api", ""))
     )
 
     return logAndReturn("Stored", returnVal)
