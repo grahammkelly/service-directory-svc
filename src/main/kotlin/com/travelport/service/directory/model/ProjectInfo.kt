@@ -1,31 +1,56 @@
 package com.travelport.service.directory.model
 
-import com.travelport.service.directory.model.ProjectType.SERVICE
-import com.travelport.service.directory.model.ProjectType.valueOf
+import com.travelport.service.directory.model.enums.ProjectType
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Pattern
 
-data class ProjectInfo (
+@Document(collection = "projects")
+open class ProjectInfo (
+    @field:Id var id: Long = -1L,
+    var name: String = "",
     @field:NotEmpty var type: String = "",
-    var projectType: ProjectType = SERVICE
     var displayName: String? = null,
     var desc: String? = null,
-    var owner: Owner? = null,
-    var tags: Set<String> = HashSet<String>(),
-    var related: RelatedLinks? = RelatedLinks()
+    var owner: ProjectTeam? = null,
+    var tags: Set<String> = emptySet(),
+    var related: RelatedLinks = RelatedLinks(),
+    var repository: String? = null
 ) {
-  fun cleanUp(repoName: String): ProjectInfo {
+
+  //
+  // If the model here changes and the older version (from Mongo) does not map correctly to the new
+  // data structure, use a mapping constructor like the following:
+  //
+  //  ```
+  //  @PersistenceConstructor constructor(val somethingFromOldModel: SomeRandomType) :
+  //      this(/*default constructor, leaving properties blank if needed*/) {
+  //    //Now do your mapping here!
+  //  }
+  //  ```
+  //
+
+  fun cleanUp(repoName: String, gitBaseAddr: String): ProjectInfo {
     displayName = displayName ?: repoName
-    projectType = valueOf(type.toUpperCase())
+    name = repoName
+    type = try {
+      ProjectType.fromString(type).toString()} catch (e: IllegalArgumentException) {""}
+    repository = gitBaseAddr + repoName
 
     return this
+  }
+
+  fun importantInfo(): String {
+    return "id: ${id}, name: '${name}', type: '${type}', repository: '${repository}'"
   }
 }
 
 data class RelatedLinks (
-    var dependsOn: Set<String> = HashSet<String>(),
-    var dependencyOf: Set<String> = HashSet<String>(),
-    var links: Set<LinkInfo> = HashSet<LinkInfo>()
+    var dependsOn: Set<String>? = emptySet(),
+    var dependencyOf: Set<LinkInfo> = emptySet(),
+    var links: Set<LinkInfo> = emptySet(),
+    var dependsUpon: Set<LinkInfo>? = emptySet()
 )
 
 data class LinkInfo (
@@ -35,7 +60,7 @@ data class LinkInfo (
   //LinkInfo only depends on 'name' to define whether it's equivalent to another link. Ensure hashCode and equals know this, and ordering reflects it too!
   override fun equals(other: Any?): Boolean {
     if (other == null) return false
-    if (!(other is LinkInfo)) return false
+    if (other !is LinkInfo) return false
     return name == other.name
   }
 
@@ -47,3 +72,4 @@ data class LinkInfo (
     return name.compareTo(other.name)
   }
 }
+

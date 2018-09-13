@@ -14,12 +14,23 @@ description = 'Demo of the System Team CI/CD process for a Spring Boot applicati
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 
+compileKotlin {
+  sourceCompatibility = JavaVersion.VERSION_1_8
+  targetCompatibility = JavaVersion.VERSION_1_8
+
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}
+
 build {
   sonarExclusions = ['**/Application.*,**/model/**']
 }
 
 ext {
   mttJsonObjectMapper = "1.3.0"
+  mttPlatformCommonLoggingVersion = "1.2.2"
+
   autoConfigureVersion = "2.0.1"
   testAutoConfigureVersion = "2.0.1"
   rabbitAutoConfigureVersion = "1.0.1"
@@ -31,13 +42,27 @@ ext {
 dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
+  //Enable hot reloading in IDE. Make sure you turn on auto conpile on IntelliJ also! See 'https://stackoverflow.com/questions/23155244/spring-boot-hotswap-with-intellij-ide'
+  compile("org.springframework.boot:spring-boot-devtools")
+
   compile "org.springframework.boot:spring-boot-starter-actuator"
   compile "org.springframework.boot:spring-boot-starter-web"
   compile "org.springframework.boot:spring-boot-starter-data-mongodb"
   compile "org.springframework.boot:spring-boot-starter-amqp"
+  compile "org.springframework.boot:spring-boot-starter-thymeleaf"
+  compile("org.springframework.boot:spring-boot-starter-hateoas") {
+    exclude group: "org.springframework", module: "spring-aop"
+    exclude group: "org.springframework", module: "spring-beans"
+    exclude group: "org.springframework", module: "spring-context"
+    exclude group: "org.springframework", module: "spring-core"
+    exclude group: "org.springframework", module: "spring-web"
+    exclude group: "org.springframework", module: "spring-webmvc"
+    exclude group: "org.slf4j", module: "slf4j-api"
+  }
 
   compile "com.mttnow.platform.spring.boot.auto.configure:platform-spring-boot-auto-configure:${autoConfigureVersion}"
   compile "com.mttnow.common:json-object-mapper:${mttJsonObjectMapper}"
+  compile "com.mttnow.platform.common:logging-java:${mttPlatformCommonLoggingVersion}"
 
   compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.2")
 

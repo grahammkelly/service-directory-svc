@@ -12,3 +12,14 @@ spring:
     username: atfeadmf
     password: L1soAOkSmtPbQFvy08af47hec-I8_jcN
     virtual-host: atfeadmf
+
+service-directory:
+  minimum-allocatable-id: 5000
+  git:
+    baseAddr: http://bitbucket.org/mttnow/
+
+logging:
+  level:
+    com.travelport.service.directory: DEBUG
+    com.travelport.service.directory.service: TRACE
+    com.travelport.service.directory.metrics: INFO
