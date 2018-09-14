@@ -117,7 +117,7 @@ class ProjectApiControllerTest extends Specification {
     ProjectApiController cut = createClassUnderTest()
 
     given: "a YAML representation of an object"
-    String yamlDataBody = new File(getClass().getResource('/test-projects/testProjectAllCorrect.yml').toURI()).text
+    String yamlDataBody = new File(getClass().getResource('/data/testProjectAllCorrect.yml').toURI()).text
     ProjectApiController.Incoming mappedDataBody = realMapper.loadAs(yamlDataBody, ProjectApiController.Incoming)
 
     when: "The data is passed to the post method"
