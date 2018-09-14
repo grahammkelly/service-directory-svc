@@ -1,0 +1,22 @@
+build:
+  pipeline: Jenkinsfile
+projectInfo:
+  type: service
+  displayName: Test Project correct
+  desc: Tests the service with a project with all values set
+  serviceCode: tpc
+  owner:
+    team: test-team
+    contact:
+      slack: test-team
+      msteams:
+        name: TIE ART|Server
+        link: https://teams.microsoft.com/l/channel/19%3a96d089548a2d45ccafb621efe7d05f7a%40thread.skype/Server?groupId=c61703e8-be3b-47a1-895d-973eeffe54f8&tenantId=6416915b-6778-4c36-ba4f-e56ff64a8bb7
+      email: test-team@travelport.com
+  tags: [tag-01, tag-02]
+  related:
+    dependsOn: [sample-downstream-project-01, sample-downstream-project-02]
+    dependencyOf: [sample-upstream-project]
+    links:
+    - name: Sample Link
+      link: 'https://example.example.com'
