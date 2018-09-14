@@ -142,9 +142,8 @@ class ProjectApiController: MeasuringService() {
 
     val project = svc.getProjectNamed(repoName) ?: throw UnknownProjectName(repoName, version)
     logger.warn("Deleting project - ${project.importantInfo()}")
-    //    svc.delete(project)
-    //    logger.warn("Project {} deleted", repoName)
-    throw NotImplemented("delete")
+    svc.delete(project)
+    logger.warn("Project {} deleted", repoName)
   }
 
   @DeleteMapping(path=["/projects"])
