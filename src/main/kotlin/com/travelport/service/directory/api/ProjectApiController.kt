@@ -96,7 +96,7 @@ class ProjectApiController: MeasuringService() {
   @PostMapping(path = ["/project/{repoName}/{version}"], produces = [MediaType.APPLICATION_JSON_VALUE])
   @ResponseStatus(CREATED)
   fun postProject(@PathVariable repoName: String, @PathVariable version: String,
-      @Valid @RequestBody projectStr: String): Map<String, String> {
+      @Valid @RequestBody projectStr: String): Map<String, Any> {
     setEventName(POST, "/api/project/{repoName}/{version}")
     logger.debug("POST received for project {}", repoName)
 
@@ -109,7 +109,7 @@ class ProjectApiController: MeasuringService() {
     svc.save(project)
 
     val returnVal = mapOf(
-        Pair("id", project.id.toString()),
+        Pair("id", project.id),
         Pair("name", project.name),
         Pair("link",
             linkTo(methodOn(ProjectApiController::class.java).getProject(project.name))
@@ -121,7 +121,7 @@ class ProjectApiController: MeasuringService() {
 
   @PostMapping(path = ["/project/{repoName}"], produces = [MediaType.APPLICATION_JSON_VALUE])
   @ResponseStatus(CREATED)
-  fun postProject(@PathVariable repoName: String, @Valid @RequestBody projectStr: String): Map<String, String> =
+  fun postProject(@PathVariable repoName: String, @Valid @RequestBody projectStr: String): Map<String, Any> =
       postProject(repoName, "", projectStr)
 
   @DeleteMapping(path = ["/project/{id}"])
