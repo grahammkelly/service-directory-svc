@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Pattern
 
 @Document(collection = "projects")
-open class ProjectInfo (
+open class ProjectInfo @JvmOverloads constructor(
     @field:Id var id: Long = -1L,
     var name: String = "",
     @field:NotEmpty var type: String = "",
@@ -46,14 +46,14 @@ open class ProjectInfo (
   }
 }
 
-data class RelatedLinks (
+data class RelatedLinks @JvmOverloads constructor(
     var dependsOn: Set<String>? = emptySet(),
     var dependencyOf: Set<LinkInfo> = emptySet(),
     var links: Set<LinkInfo> = emptySet(),
     var dependsUpon: Set<LinkInfo>? = emptySet()
 )
 
-data class LinkInfo (
+data class LinkInfo @JvmOverloads constructor(
     @field:NotEmpty var name: String = "",
     @field:Pattern(regexp = "https?://.*", message = "Link must be a valid URL") var link: String = ""
 ): Comparable<LinkInfo> {
