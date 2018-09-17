@@ -4,6 +4,7 @@ import org.joda.time.DateTime
 import org.joda.time.Period
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import javax.servlet.Filter
@@ -14,6 +15,7 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+@ConditionalOnBean(Metrics::class)
 @Component
 class MetricsFilter: Filter {
   @Autowired private lateinit var metrics: Metrics
