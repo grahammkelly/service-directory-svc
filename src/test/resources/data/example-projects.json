@@ -1,0 +1,30 @@
+[
+  {
+    "_class": "com.travelport.service.directory.model.ProjectInfo",
+    "id": "1",
+    "name": "test-project-01",
+    "serviceCode": "tp1",
+    "owner": {
+      "team": "team1"
+    },
+    "tags": [],
+    "related": {
+      "dependsOn": [],
+      "links": []
+    }
+  },
+  {
+    "_class": "com.travelport.service.directory.model.ProjectInfo",
+    "id": "2",
+    "name": "upstream-project-01",
+    "serviceCode": "up1",
+    "owner": {
+      "team": "team1"
+    },
+    "tags": [],
+    "related": {
+      "dependsOn": ["test-project-01"],
+      "links": []
+    }
+  }
+]
