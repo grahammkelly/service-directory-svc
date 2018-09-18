@@ -3,9 +3,16 @@ package com.travelport.service.directory.model
 import com.travelport.service.directory.model.enums.ProjectType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.util.Objects
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Pattern
 
+//
+// Can't use 'data class' here as kotlin makes clases final by default (and explicitly final for data classes).
+// Spring cannot apply it's enhancements over final classes. The all-open gradle plugin should fix this (and the
+// kotlin spring plugin), however, in this case cannot be applied. I don't have the time to investigate, so not
+// using data classes. This means I need to implement equals and hashCode myself, though.
+//
 @Document(collection = "projects")
 open class ProjectInfo @JvmOverloads constructor(
     @field:Id var id: Long = -1L,
@@ -44,6 +51,22 @@ open class ProjectInfo @JvmOverloads constructor(
   fun importantInfo(): String {
     return "id: ${id}, name: '${name}', type: '${type}', repository: '${repository}'"
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (other !is ProjectInfo) return false
+    if (other === this) return true
+    if (other !is ProjectInfo) return false
+
+    return id == other.id && name == other.name && type == other.type &&
+        displayName == other.displayName && desc == other.desc &&
+        owner == other.owner &&
+        tags == other.tags && related == other.related &&
+        repository == other.repository
+  }
+
+  override fun hashCode(): Int {
+    return Objects.hash(id, name, type, displayName, desc, owner, tags, related, repository)
+  }
 }
 
 data class RelatedLinks @JvmOverloads constructor(
@@ -60,6 +83,7 @@ data class LinkInfo @JvmOverloads constructor(
   //LinkInfo only depends on 'name' to define whether it's equivalent to another link. Ensure hashCode and equals know this, and ordering reflects it too!
   override fun equals(other: Any?): Boolean {
     if (other == null) return false
+    if (other === this) return true
     if (other !is LinkInfo) return false
     return name == other.name
   }
