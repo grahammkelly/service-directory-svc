@@ -4,7 +4,6 @@ import com.travelport.service.directory.api.ProjectApiController
 import com.travelport.service.directory.model.LinkInfo
 import com.travelport.service.directory.model.ProjectInfo
 import com.travelport.service.directory.repository.ProjectInfoRepository
-import com.travelport.service.directory.view.ProjectViewController
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -33,7 +32,6 @@ internal fun linkToViewForProject(project: String, logger: Logger? = null):Strin
   (logger ?: LoggerFactory.getLogger("com.travelport.service.directory.service.enrichments.ProjectServiceEnrichments"))
       .trace("Creating link for {}", project)
   val targetController = ProjectApiController::class.java
-//  val targetController = ProjectViewController::class.java
   val a =
       ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(targetController).getProject(project))
           .withSelfRel().href
@@ -42,7 +40,7 @@ internal fun linkToViewForProject(project: String, logger: Logger? = null):Strin
 
 internal fun createLink(project: String, logger: Logger? = null): LinkInfo {
   val link = linkToViewForProject(project, logger)
-  return LinkInfo(project, link.replace("/api", ""))
+  return LinkInfo(project, link)
 }
 
 @Component

@@ -2,7 +2,6 @@ package com.travelport.service.directory.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.travelport.service.directory.NoProjectInfo
-import com.travelport.service.directory.NotImplemented
 import com.travelport.service.directory.UnknownProjectId
 import com.travelport.service.directory.UnknownProjectName
 import com.travelport.service.directory.config.ServiceDirectoryConfiguration
@@ -60,7 +59,6 @@ class ProjectApiController: MeasuringService() {
 
     logger.info("Request for project '{}' found [{}]", arg, project.importantInfo())
     return logAndReturn("Returning", project)
-
   }
 
   private fun getProjectForName(name: String): ProjectInfo {
@@ -86,7 +84,7 @@ class ProjectApiController: MeasuringService() {
     val projLinks = projects.map{
       it.name to
           linkTo(methodOn(ProjectApiController::class.java).getProject(it.name))
-              .withSelfRel().href.replace("/api", "")
+              .withSelfRel().href
     }.toMap()
 
     logger.info("Found ${projLinks.size} projects")
@@ -113,10 +111,10 @@ class ProjectApiController: MeasuringService() {
         Pair("name", project.name),
         Pair("link",
             linkTo(methodOn(ProjectApiController::class.java).getProject(project.name))
-                .withSelfRel().href.replace("/api", ""))
+                .withSelfRel().href)
     )
 
-    return logAndReturn("Stored", returnVal)
+    return logAndReturn("Stored, returning", returnVal)
   }
 
   @PostMapping(path = ["/project/{repoName}"], produces = [MediaType.APPLICATION_JSON_VALUE])

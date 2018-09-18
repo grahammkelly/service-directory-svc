@@ -49,7 +49,6 @@ dependencies {
   compile "org.springframework.boot:spring-boot-starter-web"
   compile "org.springframework.boot:spring-boot-starter-data-mongodb"
   compile "org.springframework.boot:spring-boot-starter-amqp"
-  compile "org.springframework.boot:spring-boot-starter-thymeleaf"
   compile("org.springframework.boot:spring-boot-starter-hateoas") {
     exclude group: "org.springframework", module: "spring-aop"
     exclude group: "org.springframework", module: "spring-beans"
