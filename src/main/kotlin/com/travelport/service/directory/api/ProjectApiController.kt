@@ -122,28 +122,29 @@ class ProjectApiController: MeasuringService() {
   fun postProject(@PathVariable repoName: String, @Valid @RequestBody projectStr: String): Map<String, Any> =
       postProject(repoName, "", projectStr)
 
-  @DeleteMapping(path = ["/project/{id}"])
+  @DeleteMapping(path = ["/project/{arg}"])
   @ResponseStatus(OK)
-  fun deleteProjectId(@PathVariable id: Long) {
+  fun deleteProject(@PathVariable arg: String) {
+    if (arg.toLongOrNull() != null) deleteProjectId(arg.toLong()) else deleteProjectName(arg)
+    logger.warn("Project {} deleted", arg)
+  }
+
+  private fun deleteProjectId(id: Long) {
     setEventName(DELETE, "/api/project/{id}")
-    logger.warn("Deleting request for project id {} from the collection", id)
-    svc.deleteProjectId(id)
-    logger.warn("Project {} deleted", id)
+    logger.warn("Delete request for project id {} from the collection", id)
+    svc.getId(id)?.let{ deleteProject(it) } ?: throw UnknownProjectId(id)
   }
 
+  private fun deleteProjectName(repoName: String, version: String? = "") {
+    setEventName(DELETE, "/api/project/{repoName}")
+    logger.warn("Delete request for project named '{}' from the collection", repoName)
+    svc.getProjectNamed(repoName)?.let{ deleteProject(it) } ?: throw UnknownProjectName(repoName, version ?: "")
+  }
 
-  @DeleteMapping(path = ["/project/{repoName}/{version}"])
-  @ResponseStatus(OK)
-  fun deleteProjectWithVersion(@PathVariable repoName: String, @PathVariable version: String?) {
-    setEventName(DELETE, "/api/project/{repoName}/{version}")
-    logger.warn("Delete request for project {}", repoName)
-
-    val project = svc.getProjectNamed(repoName) ?: throw UnknownProjectName(repoName, version)
-    logger.warn("Deleting project - ${project.importantInfo()}")
+  private fun deleteProject(project: ProjectInfo) {
+    logger.warn("Deleting project - {}", project.importantInfo())
     svc.delete(project)
-    logger.warn("Project {} deleted", repoName)
   }
-
   @DeleteMapping(path=["/projects"])
   @ResponseStatus(OK)
   fun deleteAllProjects() {
