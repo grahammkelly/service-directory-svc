@@ -27,12 +27,6 @@ class ExceptionHandler {
     return ApiError("No Project information", req.requestURI, BAD_REQUEST)
   }
 
-  @ExceptionHandler(NotImplemented::class)
-  @ResponseStatus(NOT_IMPLEMENTED)
-  fun handleUnimplementedYet(req: HttpServletRequest, e: NotImplemented): ApiError {
-    return ApiError(e.message ?: "Not implemented", req.requestURI, NOT_IMPLEMENTED)
-  }
-
   class ApiError(
       val error: String,
       val url: String,
