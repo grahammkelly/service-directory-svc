@@ -14,6 +14,7 @@ import com.travelport.service.directory.config.GitInfo
 import com.travelport.service.directory.config.ServiceDirectoryConfiguration
 import com.travelport.service.directory.model.ProjectInfo
 import com.travelport.service.directory.service.ProjectService
+import org.joda.time.DateTime
 import org.spockframework.spring.SpringBean
 import org.yaml.snakeyaml.Yaml
 import spock.lang.Specification
@@ -52,12 +53,17 @@ class ProjectApiControllerWebMvcTest extends Specification {
   @SpringBean ProjectService svc = Mock()
   @SpringBean ServiceDirectoryConfiguration cfg = Mock()
 
-  String projectYaml = new File(getClass().getResource('/data/testProjectAllCorrect.yml').toURI()).text
+  String yamlPipelineWithProject = new File(getClass().getResource('/data/testProjectAllCorrect.yml').toURI()).text
+  String yamlPipilineNoProject = """
+build:
+  pipeline: Jenkinsfile
+"""
+
   ProjectInfo expectedProjectInfo
 
   def setup() {
     expectedProjectInfo =
-        (yamlMapper.loadAs(projectYaml, ProjectApiController.Incoming) as ProjectApiController.Incoming).projectInfo
+        (yamlMapper.loadAs(yamlPipelineWithProject, ProjectApiController.Incoming) as ProjectApiController.Incoming).projectInfo
   }
 
   def "POST of a valid project should store the project"() {
@@ -67,7 +73,7 @@ class ProjectApiControllerWebMvcTest extends Specification {
     when: "we POST project details for a test project"
     def result = mockMvc.perform(
         post("/api/project/${testProjectName}")
-            .contentType("application/yaml").content(projectYaml)
+            .contentType("application/yaml").content(yamlPipelineWithProject)
             .accept(MediaType.APPLICATION_JSON)
     ).andExpect(status().isCreated()).andReturn()
     Map<String, Object> respBody = om.readValue(result?.mockResponse?.content?.buf, Map)
@@ -91,6 +97,32 @@ class ProjectApiControllerWebMvcTest extends Specification {
     respBody.containsKey "id"
     respBody.id == testId
     respBody.link.endsWith("/api/project/${testProjectName}")
+
+  }
+
+  def "POST for a pipeline config with no project data should return BAD_REQUEST"() {
+    String reqUrl = "/api/project/${testProjectName}"
+    DateTime instantBeforeStart = DateTime.now().minusMillis(1)
+
+    when:
+    def result = mockMvc.perform(
+        post(reqUrl)
+            .contentType("application/yaml").content(yamlPipilineNoProject)
+            .accept(MediaType.APPLICATION_JSON)
+    ).andExpect(status().isBadRequest()).andReturn()
+    def respBody = result.modelAndView.model
+
+    then:
+    0 * svc.save(_)
+
+    and:
+    respBody.containsKey "apiError"
+    def apiError = respBody.apiError
+    apiError.status == HttpStatus.BAD_REQUEST
+    (apiError.error as String).toLowerCase().contains "no project"
+    apiError.url == reqUrl
+    apiError.timeStamp != null
+    (apiError.timeStamp as DateTime).isAfter(instantBeforeStart)
 
   }
 

@@ -1,6 +1,7 @@
 package com.travelport.service.directory.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.travelport.service.directory.NoProjectInfo
 import com.travelport.service.directory.NotImplemented
 import com.travelport.service.directory.UnknownProjectId
 import com.travelport.service.directory.UnknownProjectName
@@ -22,6 +23,12 @@ class ProjectApiControllerTest extends Specification {
 
   Yaml realMapper = createYamlMapper()
 
+  ProjectApiController cut
+
+  def setup() {
+    cut = createClassUnderTest()
+  }
+
   static private def createYamlMapper() {
     Representer representer = new Representer()
     representer.propertyUtils.skipMissingProperties = true
@@ -39,7 +46,6 @@ class ProjectApiControllerTest extends Specification {
   }
 
   def "listing the projects"() {
-    ProjectApiController cut = createClassUnderTest()
     ProjectInfo proj1 = new ProjectInfo(name: 'test-proj1')
     ProjectInfo proj2= new ProjectInfo(name: 'test-proj2')
 
@@ -53,7 +59,6 @@ class ProjectApiControllerTest extends Specification {
   }
 
   def "GET project sending an Id should identify it's an ID and search for the ID"() {
-    ProjectApiController cut = createClassUnderTest()
     Long testId = 999L
     ProjectInfo expectedResult = new ProjectInfo(testId, "test-project")
 
@@ -68,7 +73,6 @@ class ProjectApiControllerTest extends Specification {
   }
 
   def "GET project where ID does not exists"() {
-    ProjectApiController cut = createClassUnderTest()
     Long testId = 999L
 
     when:
@@ -82,7 +86,6 @@ class ProjectApiControllerTest extends Specification {
   }
 
   def "GET project sending a name should identify it's not aan ID and serach for the name"() {
-    ProjectApiController cut = createClassUnderTest()
     String testProjectName = 'test-project'
     ProjectInfo expectedResult = new ProjectInfo(999L, testProjectName)
 
@@ -97,7 +100,6 @@ class ProjectApiControllerTest extends Specification {
   }
 
   def "GET project where name does not exists"() {
-    ProjectApiController cut = createClassUnderTest()
     String testProjectName = 'test-project'
 
     when:
@@ -113,8 +115,6 @@ class ProjectApiControllerTest extends Specification {
   def "POST controller should parse the data body into model object and clean it up"() {
     String testProjectName = "test-project-all-correct"
     Long testId = 999L
-
-    ProjectApiController cut = createClassUnderTest()
 
     given: "a YAML representation of an object"
     String yamlDataBody = new File(getClass().getResource('/data/testProjectAllCorrect.yml').toURI()).text
@@ -143,13 +143,27 @@ class ProjectApiControllerTest extends Specification {
     result.link != ""
   }
 
-  def "DELETE for name should try to verify the project exists before deleting"() {
-    ProjectApiController cut = createClassUnderTest()
+  def "POST with data not containing project information should throw an exception"() {
+    String testProjectName = "test-project-all-correct"
 
+    given: "a YAML representation of an pipeline config without project information"
+    String pipelineYaml = """
+build:
+  pipeline: Jenkinsfile
+"""
+
+    when: "The data is passed to the post method"
+    cut.postProject(testProjectName, "", pipelineYaml)
+
+    then:
+    thrown(NoProjectInfo)
+  }
+
+  def "DELETE for name should try to verify the project exists before deleting"() {
     def testProjectName = "test-project-for-delete"
 
     when: "We try to delete a random project"
-    cut.deleteProjectWithVersion(testProjectName, "")
+    cut.deleteProject(testProjectName)
 
     then : "Service should check the project exists and fail if it does not"
     1 * mockProjectSvc.getProjectNamed(testProjectName) >> null
@@ -157,13 +171,11 @@ class ProjectApiControllerTest extends Specification {
   }
 
   def "DELETE for name should try to remove the document if the project exists"() {
-    ProjectApiController cut = createClassUnderTest()
-
     def testProjectName = "test-project-for-delete"
     def testProject = new ProjectInfo()
 
-    when: "We try to delete a random project"
-    cut.deleteProjectWithVersion(testProjectName, "")
+    when: "We try to delete a project"
+    cut.deleteProject(testProjectName)
 
     then : "Service should check the project exists and fail if it does not"
     1 * mockProjectSvc.getProjectNamed(testProjectName) >> testProject
@@ -171,20 +183,18 @@ class ProjectApiControllerTest extends Specification {
   }
 
   def "DELETE for an ID should not verify the ID, just delete"() {
-    ProjectApiController cut = createClassUnderTest()
     Long testId = 999L
+    def testProject = new ProjectInfo()
 
     when: "We try to delete the ID"
-    cut.deleteProjectId(testId)
+    cut.deleteProject(testId.toString())
 
-    then: "The controller only makes  a single call"
-    0 * mockProjectSvc.getId(_)
-    1 * mockProjectSvc.deleteProjectId(testId)
+    then: "The controller verifies the project exists before deleting"
+    1 * mockProjectSvc.getId(testId) >> testProject
+    1 * mockProjectSvc.delete(testProject)
   }
 
   def "DELETE on all collectoins should make a collection delete call"() {
-    ProjectApiController cut = createClassUnderTest()
-
     when: "We try to delete everything"
     cut.deleteAllProjects()
 
