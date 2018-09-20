@@ -1,13 +1,11 @@
 package com.travelport.service.directory.api
 
 import com.travelport.service.directory.NoProjectInfo
-import com.travelport.service.directory.NotImplemented
 import com.travelport.service.directory.UnknownProject
 import org.joda.time.DateTime
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.http.HttpStatus.NOT_IMPLEMENTED
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
