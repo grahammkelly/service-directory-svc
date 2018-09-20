@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.util.Objects
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Pattern
+import kotlin.math.PI
 
 //
 // Can't use 'data class' here as kotlin makes clases final by default (and explicitly final for data classes).
@@ -53,9 +54,8 @@ open class ProjectInfo @JvmOverloads constructor(
   }
 
   override fun equals(other: Any?): Boolean {
-    if (other !is ProjectInfo) return false
+    if (other == null || other !is ProjectInfo) return false
     if (other === this) return true
-    if (other !is ProjectInfo) return false
 
     return id == other.id && name == other.name && type == other.type &&
         displayName == other.displayName && desc == other.desc &&
@@ -67,6 +67,9 @@ open class ProjectInfo @JvmOverloads constructor(
   override fun hashCode(): Int {
     return Objects.hash(id, name, type, displayName, desc, owner, tags, related, repository)
   }
+
+  //Duplicate 'copy' for interop with java. Used for test only!
+  fun javaCopy() = ProjectInfo(id, name, type, displayName, desc, owner?.copy(), tags, related.copy(), repository)
 }
 
 data class RelatedLinks @JvmOverloads constructor(
