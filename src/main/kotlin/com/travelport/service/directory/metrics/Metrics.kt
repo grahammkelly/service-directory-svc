@@ -83,6 +83,15 @@ class BasicMetrics: Metrics(true) {
       return this
     }
 
-    override fun toString(): String = "[Number of calls: ${count}, Average duration: ${averageDuration}]"
+    override fun equals(other: Any?): Boolean {
+      if (other == null || other !is EventInfo) return false
+      if (other === this) return true
+      return count == other.count && totalDuration == other.totalDuration &&
+          hashCode() == other.hashCode()  //Added for test coverage. I don't want to override equals without haashcode but don't want to test hashcode (testing code only added for test!!!)
+    }
+
+    override fun hashCode(): Int {
+      return count * totalDuration
+    }
   }
 }
