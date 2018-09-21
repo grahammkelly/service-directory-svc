@@ -2,7 +2,6 @@ package com.travelport.service.directory.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.travelport.service.directory.NoProjectInfo
-import com.travelport.service.directory.NotImplemented
 import com.travelport.service.directory.UnknownProjectId
 import com.travelport.service.directory.UnknownProjectName
 import com.travelport.service.directory.config.GitInfo

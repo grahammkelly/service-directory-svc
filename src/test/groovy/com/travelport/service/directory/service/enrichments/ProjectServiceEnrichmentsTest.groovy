@@ -1,35 +1,10 @@
 package com.travelport.service.directory.service.enrichments
 
-import com.travelport.service.directory.model.ProjectInfo
-import com.travelport.service.directory.model.RelatedLinks
 import com.travelport.service.directory.repository.ProjectInfoRepository
 import com.travelport.service.directory.repository.ProjectRef
-import spock.lang.Specification
+import com.travelport.service.directory.service.ProjectInfoTestBase
 
-abstract class EnrichmentTest extends Specification {
-  protected final String testProjectName = "test-project"
-  protected final Set<String> testUpstreamProjectNames = ["upstream-01", "upstream-02"]
-  protected final Set<String> testDownstreamProjectNames = ["downstream-01", "downstream-02"]
-
-  protected ProjectInfo testProject
-
-  def setup() {
-    testProject = new ProjectInfo().with {
-      name = testProjectName
-      related = new RelatedLinks().with {
-        dependsOn = testDownstreamProjectNames
-        it
-      }
-      it
-    }
-    assert testProject.tags.isEmpty()
-    assert testProject.related.dependencyOf.isEmpty()
-    assert testProject.related.dependsUpon.isEmpty()
-  }
-}
-
-class SaveEnrichmentsTest extends EnrichmentTest {
-
+class SaveEnrichmentsTest extends ProjectInfoTestBase {
   def "Make sure project references to self are added"() {
     final def cut = new EnsureProjectReferencesItself()
 
@@ -42,7 +17,7 @@ class SaveEnrichmentsTest extends EnrichmentTest {
   }
 }
 
-class ReadEnrichmentsTest extends EnrichmentTest {
+class ReadEnrichmentsTest extends ProjectInfoTestBase {
   def "Make sure dependencies on the current project are added"() {
     final def cut = new AddDependenciesOnCurrentProject()
     final def testUpstreamProjects = testUpstreamProjectNames.collect {new ProjectRef(it)}
