@@ -22,7 +22,7 @@ class ProjectService: EnrichingService<ProjectInfo>() {
 
   @Autowired private lateinit var mongoTmpl: MongoTemplate
 
-  fun list() = projectStore.findAll(Sort.by("name")).filterNotNull()
+  fun list() = projectStore.findAll(Sort.by("name")).filterNotNull().map { applyReadEnrichments(it) }
 
   fun save(project: ProjectInfo): ProjectInfo {
     logger.debug("Storing project: {${project.importantInfo()}}")
@@ -38,15 +38,6 @@ class ProjectService: EnrichingService<ProjectInfo>() {
   fun getProjectNamed(name: String) = projectStore.findByName(name)?.let { applyReadEnrichments(it) }
 
   fun getId(id: Long) = projectStore.findById(id).orElse(null)?.let { applyReadEnrichments(it) }
-
-  @Throws(IllegalArgumentException::class)
-  fun deleteProjectId(id: Long) {
-    if (id < 1) throw IllegalArgumentException("No project to be deleted")
-    projectStore.deleteById(id)
-  }
-
-  @Throws(IllegalArgumentException::class)
-  fun deleteProjectNamed(projectName: String) = delete(getProjectNamed(projectName))
 
   @Throws(IllegalArgumentException::class)
   fun delete(project: ProjectInfo?) {
