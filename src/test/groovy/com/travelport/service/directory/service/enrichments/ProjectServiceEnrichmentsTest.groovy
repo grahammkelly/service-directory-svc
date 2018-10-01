@@ -15,6 +15,37 @@ class SaveEnrichmentsTest extends ProjectInfoTestBase {
     !testProject.tags.isEmpty()
     testProject.tags.contains(testProjectName)
   }
+
+  def "Make sure project reference to the service code is added if tags exist but the code is not a tag"() {
+    final String code = "new"
+    final def cut = new EnsureProjectReferencesItsServiceCode()
+
+    testProject.addTag("random-tag")
+    testProject.serviceCode = code
+    assert !testProject.tags.contains(code)
+
+    when:
+    cut.enrich(testProject)
+
+    then:
+    testProject.tags.contains(code)
+  }
+
+  def "Make sure project reference to the service code is added tags are empty"() {
+    final String code = "new"
+    final def cut = new EnsureProjectReferencesItsServiceCode()
+
+    testProject.tags = []
+    testProject.serviceCode = code
+    assert !testProject.tags.contains(code)
+
+    when:
+    cut.enrich(testProject)
+
+    then:
+    ! testProject.tags.isEmpty()
+    testProject.tags.contains(code)
+  }
 }
 
 class ReadEnrichmentsTest extends ProjectInfoTestBase {

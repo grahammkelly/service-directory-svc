@@ -6,7 +6,6 @@ import com.travelport.service.directory.config.ServiceDirectoryConfiguration
 import com.travelport.service.directory.model.ProjectInfo
 import com.travelport.service.directory.repository.ProjectInfoRepository
 import com.travelport.service.directory.service.enrichments.ReadEnrichment
-import spock.lang.Ignore
 
 class ProjectServiceTest extends ProjectInfoTestBase {
   final ServiceDirectoryConfiguration mockCfg = Mock()

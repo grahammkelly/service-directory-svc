@@ -1,6 +1,7 @@
 package com.travelport.service.directory.model.enums
 
 enum class ProjectType {
+  UNKNOWN,
   SERVICE,
   LIBRARY,
   IOS_APP,
@@ -12,8 +13,8 @@ enum class ProjectType {
   companion object {
     @Throws(IllegalArgumentException::class)
     fun fromString(incoming: String?): ProjectType? {
-      if (incoming == null) return null
-      return valueOf(incoming.toUpperCase())
+      if (incoming == null) return UNKNOWN
+      return try {valueOf(incoming.toUpperCase())} catch (e: IllegalArgumentException) {UNKNOWN}
     }
   }
 }

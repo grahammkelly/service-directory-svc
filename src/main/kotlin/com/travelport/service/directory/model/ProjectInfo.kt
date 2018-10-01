@@ -23,7 +23,9 @@ open class ProjectInfo @JvmOverloads constructor(
     var owner: ProjectTeam? = null,
     var tags: Set<String> = emptySet(),
     var related: RelatedLinks = RelatedLinks(),
-    var repository: String? = null
+    var repository: String? = null,
+    var product: String = "core",
+    var serviceCode: String = ""
 ) {
 
   //
@@ -42,29 +44,51 @@ open class ProjectInfo @JvmOverloads constructor(
     displayName = displayName ?: repoName
     name = repoName
     type = try {
-      ProjectType.fromString(type).toString()} catch (e: IllegalArgumentException) {""}
+      ProjectType.fromString(type).toString()
+    } catch (e: IllegalArgumentException) {
+      ""
+    }
     repository = gitBaseAddr + repoName
 
     return this
   }
 
-  fun importantInfo() = "id: ${id}, name: '${name}', type: '${type}', repository: '${repository}'"
+  fun importantInfo() =
+      "id: ${id}, name: '${name}', type: '${type}', project: '${product}',${serviceCodeStr} repository: '${repository}'"
+
+  private val serviceCodeStr: String
+      get() =
+        if (isService) " serviceCode: '${serviceCode}'," else ""
+
+  val isService: Boolean
+    get() = (ProjectType.SERVICE == ProjectType.fromString(type))
 
   override fun equals(other: Any?): Boolean {
-    if (other == null || other !is ProjectInfo) return false
+    if (other == null) return false
     if (other === this) return true
+    if (other !is ProjectInfo) return false
 
     return id == other.id && name == other.name && type == other.type &&
         displayName == other.displayName && desc == other.desc &&
         owner == other.owner &&
         tags == other.tags && related == other.related &&
-        repository == other.repository
+        repository == other.repository &&
+        product == other.product && serviceCode == other.serviceCode
   }
 
-  override fun hashCode() = Objects.hash(id, name, type, displayName, desc, owner, tags, related, repository)
+  override fun hashCode() =
+      Objects.hash(id, name, type, displayName, desc, owner, tags, related, repository, product, serviceCode)
 
   //Duplicate 'copy' for interop with java. Used for test only!
-  fun javaCopy() = ProjectInfo(id, name, type, displayName, desc, owner?.copy(), tags, related.copy(), repository)
+  fun javaCopy() =
+      ProjectInfo(id, name, type, displayName, desc, owner?.copy(), tags, related.copy(), repository, product,
+          serviceCode)
+
+  fun containsTag(tag: String) = (!tags.isEmpty()) && tags.contains(tag)
+
+  fun addTag(newTag: String) {
+    tags = tags.toMutableSet().apply { add(newTag) }
+  }
 }
 
 data class RelatedLinks @JvmOverloads constructor(

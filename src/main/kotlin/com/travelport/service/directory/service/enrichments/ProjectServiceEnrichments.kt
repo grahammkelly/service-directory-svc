@@ -15,14 +15,22 @@ class EnsureProjectReferencesItself: SaveEnrichment<ProjectInfo> {
   val logger = LoggerFactory.getLogger(EnsureProjectReferencesItself::class.java)
 
   override fun enrich(project: ProjectInfo): ProjectInfo {
-    if (project.tags.isEmpty() || !(project.tags.contains(project.name))) {
-      val tags = project.tags.toMutableSet()
-      tags.apply {
-        add(project.name!!)   //Can't get this far without a name!
-        project.tags = this.toSet()
-        logger.trace("Recording '${project.name}' as a tag of itself")
-      }
-      project.tags = tags.toSet()
+    if (!project.containsTag(project.name)) {
+      project.addTag(project.name)
+      logger.trace("Recording '${project.name}' as a tag of itself")
+    }
+    return project
+  }
+}
+
+@Component
+class EnsureProjectReferencesItsServiceCode: SaveEnrichment<ProjectInfo> {
+  val logger = LoggerFactory.getLogger(EnsureProjectReferencesItsServiceCode::class.java)
+
+  override fun enrich(project: ProjectInfo): ProjectInfo {
+    if (!(project.serviceCode.isEmpty() || project.containsTag(project.serviceCode))) {
+      project.addTag(project.serviceCode)
+      logger.trace("Recording '${project.serviceCode}' as a tag to project ${project.name}")
     }
     return project
   }
