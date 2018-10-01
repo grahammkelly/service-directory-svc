@@ -29,7 +29,7 @@ class ProjectService: EnrichingService<ProjectInfo>() {
     if (project.id < 1) {
       //First check if this is an update by searching for the name, if so use the found ID. If not, find the next ID to allocate
       //Name should never be null here, as it's validated on entry
-      project.id = projectStore.findByName(project.name!!)?.id ?: nextValidProjectId
+      project.id = projectStore.findByName(project.name)?.id ?: nextValidProjectId
       logger.trace("Resetting ID for project to ${project.id}")
     }
     return projectStore.save(applySaveEnrichments(project))
