@@ -108,10 +108,29 @@ task testIntegration(type: Test) {
   include "com/travelport/**/integration/**"
 
   jacoco {
-    destinationFile = file("${buildDir}/jacoco/integration-tests.exec")
+    destinationFile = file("${buildDir}/jacoco/integration.exec")
   }
 
   mustRunAfter test
 }
 
-stageTest.dependsOn(testIntegration)
+task testAcceptanceLocal(type: Test) {
+  description = 'Runs Local Acceptance Tests'
+
+  include '**/RunCukes.class'
+
+  jacoco {
+    destinationFile = file("${buildDir}/jacoco/acceptance-local.exec")
+  }
+
+  mustRunAfter testIntegration
+}
+
+task mergeIntegrationAndAcceptanceTestCoverage(type: JacocoMerge) {
+  executionData testIntegration, testAcceptanceLocal
+  destinationFile = file("${buildDir}/jacoco/integration-tests.exec")
+
+  mustRunAfter testAcceptanceLocal
+}
+
+stageTest.dependsOn(testIntegration, testAcceptanceLocal, mergeIntegrationAndAcceptanceTestCoverage)
