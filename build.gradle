@@ -37,6 +37,10 @@ ext {
 
   spockVersion = "1.2-groovy-2.4-SNAPSHOT"
   spockCollaboratorVersion = "1.2.1"
+
+  cukesVersion = "4.0.0"
+//  jaywayRestAssuredVersion = '3.1.1'
+  jaywayRestAssuredVersion = '2.4.1'
 }
 
 dependencies {
@@ -68,6 +72,11 @@ dependencies {
   testCompile "org.springframework.boot:spring-boot-starter-test"
   testCompile "de.flapdoodle.embed:de.flapdoodle.embed.mongo"
 
+  testCompile "io.cucumber:cucumber-groovy:${cukesVersion}"
+  testCompile "io.cucumber:cucumber-junit:${cukesVersion}"
+//  testCompile "io.rest-assured:rest-assured:${jaywayRestAssuredVersion}"
+  testCompile "com.jayway.restassured:rest-assured:${jaywayRestAssuredVersion}"
+
   testCompile "com.mttnow.platform.spring.boot.test.auto.configure:platform-spring-boot-test-auto-configure:${testAutoConfigureVersion}"
   testCompile "com.mttnow.platform.spring.boot.test.auto.configure.rabbit:platform-spring-boot-test-auto-configure-rabbit:${rabbitAutoConfigureVersion}"
 
@@ -76,3 +85,33 @@ dependencies {
   testCompile "org.spockframework:spock-spring:${spockVersion}"
   testCompile "com.blogspot.toomuchcoding:spock-subjects-collaborators-extension:${spockCollaboratorVersion}"
 }
+
+sonarqube {
+  properties {
+    property 'sonar.groovy.jacoco.reportPath', "${buildDir}/jacoco/unit-tests.exec"
+    property 'sonar.groovy.jacoco.itReportPath', "${buildDir}/jacoco/integration-tests.exec"
+  }
+}
+
+test {
+  exclude '**/acceptance/**'
+  exclude "**/integration/**"
+
+  jacoco {
+    destinationFile = file("${buildDir}/jacoco/unit-tests.exec")
+  }
+}
+
+task testIntegration(type: Test) {
+  description = 'Runs Integration Tests'
+
+  include "com/travelport/**/integration/**"
+
+  jacoco {
+    destinationFile = file("${buildDir}/jacoco/integration-tests.exec")
+  }
+
+  mustRunAfter test
+}
+
+stageTest.dependsOn(testIntegration)

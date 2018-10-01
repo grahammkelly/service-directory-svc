@@ -1,4 +1,4 @@
-package com.travelport.service.directory.api
+package com.travelport.service.directory.api.integration
 
 import java.util.concurrent.TimeUnit
 
@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.mttnow.platform.spring.boot.test.auto.configure.SpringBootIntegrationTest
 import com.mttnow.platform.spring.boot.test.auto.configure.mongo.NeedsCleanUp
 import com.mttnow.platform.spring.boot.test.auto.configure.mongo.NeedsTestData
+import com.travelport.service.directory.api.ProjectApiController
 import com.travelport.service.directory.model.ProjectInfo
 import com.travelport.service.directory.repository.ProjectInfoRepository
 import org.yaml.snakeyaml.Yaml

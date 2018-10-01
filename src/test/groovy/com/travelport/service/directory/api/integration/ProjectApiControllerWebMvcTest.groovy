@@ -1,4 +1,4 @@
-package com.travelport.service.directory.api
+package com.travelport.service.directory.api.integration
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.travelport.service.directory.AppConfig
+import com.travelport.service.directory.api.ProjectApiController
 import com.travelport.service.directory.config.GitInfo
 import com.travelport.service.directory.config.ServiceDirectoryConfiguration
 import com.travelport.service.directory.model.ProjectInfo
