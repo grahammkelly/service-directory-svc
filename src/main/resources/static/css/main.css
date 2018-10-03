@@ -1,0 +1,100 @@
+#header {
+    width: 100%;
+    height: 35px;
+    font-size: 16px;
+    font-family: Tahoma, Geneva, sans-serif;
+    font-weight: bold;
+    text-align: left;
+    text-shadow: 3px 2px 3px #333333;
+    background-color: #8AD9FF;
+    border-radius: 8px;
+}
+
+.Container {
+    display: grid;
+    grid-template-columns: [sidebar] 20% [project-main] auto;
+    grid-template-rows: auto;
+
+    height: 100%;
+    width: 100%;
+}
+
+.Container > * {
+    padding: 10px;
+}
+
+.sidenav {
+    grid-column: sidebar;
+
+    overflow-y: auto;
+    overflow-x: hidden; /* Disable horizontal scroll */
+
+    background-color: lightgray;
+}
+
+.sidebar > * {
+    padding: 4px 4px 8px 8px;
+    text-decoration: none;
+}
+
+.sidenav h1 {
+    color: black;
+    font-size: 24px;
+}
+
+/* The navigation menu links */
+.sidenav a {
+    font-size: 16px;
+    color: darkslategrey;
+    /*display: block;*/
+    transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+    color: black;
+}
+
+.project {
+    grid-column: project-main;
+
+    overflow-y: auto;
+    overflow-x: hidden; /* Disable horizontal scroll */
+}
+
+.project-name {
+    box-sizing: border-box;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: #eee;
+}
+
+.project-name h1 {
+    font-size: 63px;
+}
+
+.project-body {
+    padding-top: 6px;
+}
+
+.project-body h1 {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: lightyellow;
+}
+.project-body h2 {
+    font-size: 14px;
+    font-weight: bold;
+}
+.project-body h3 {
+    font-size: 14px;
+    font-style: italic;
+}
+
+.project-body p {
+    font-size: 14px;
+    font-weight: normal;
+    font-style: normal;
+}
+
+
