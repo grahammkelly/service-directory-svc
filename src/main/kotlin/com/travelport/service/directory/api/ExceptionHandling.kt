@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import javax.servlet.http.HttpServletRequest
 
@@ -15,12 +16,14 @@ import javax.servlet.http.HttpServletRequest
 class ExceptionHandler {
   @ExceptionHandler(UnknownProject::class)
   @ResponseStatus(NOT_FOUND)
+  @ResponseBody
   fun handleProjectNotFound(req: HttpServletRequest, e: UnknownProject): ApiError {
     return ApiError("Project ${e.message} does not exist", req.requestURI, NOT_FOUND)
   }
 
   @ExceptionHandler(NoProjectInfo::class)
   @ResponseStatus(BAD_REQUEST)
+  @ResponseBody
   fun handleNoProjectData(req: HttpServletRequest): ApiError  {
     return ApiError("No Project information", req.requestURI, BAD_REQUEST)
   }

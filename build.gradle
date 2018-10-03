@@ -62,6 +62,7 @@ dependencies {
     exclude group: "org.springframework", module: "spring-webmvc"
     exclude group: "org.slf4j", module: "slf4j-api"
   }
+  compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 
   compile "com.mttnow.platform.spring.boot.auto.configure:platform-spring-boot-auto-configure:${autoConfigureVersion}"
   compile "com.mttnow.common:json-object-mapper:${mttJsonObjectMapper}"
