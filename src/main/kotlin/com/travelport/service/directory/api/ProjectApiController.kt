@@ -2,6 +2,7 @@ package com.travelport.service.directory.api
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.travelport.service.directory.NoProjectInfo
+import com.travelport.service.directory.ProjectBadlyFormatted
 import com.travelport.service.directory.UnknownProjectId
 import com.travelport.service.directory.UnknownProjectName
 import com.travelport.service.directory.config.ServiceDirectoryConfiguration
@@ -32,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.error.YAMLException
+import org.yaml.snakeyaml.parser.ParserException
+import org.yaml.snakeyaml.scanner.ScannerException
 import javax.validation.Valid
 
 @RestController
@@ -92,15 +96,19 @@ class ProjectApiController: MeasuringService() {
   }
 
   @PostMapping(path = ["/project/{repoName}/{version}"], produces = [MediaType.APPLICATION_JSON_VALUE])
-  @ResponseStatus(CREATED)
+  @ResponseStatus(OK)
   fun postProject(@PathVariable repoName: String, @PathVariable version: String,
       @Valid @RequestBody projectStr: String): Map<String, Any> {
     setEventName(POST, "/api/project/{repoName}/{version}")
     logger.debug("POST received for project {}", repoName)
 
     val project =
-        yamlMapper.loadAs(projectStr, Incoming::class.java)?.projectInfo?.cleanUp(repoName, cfg.git.baseAddr)
-            ?: throw NoProjectInfo()
+        try {
+          yamlMapper.loadAs(projectStr, Incoming::class.java)?.projectInfo?.cleanUp(repoName, cfg.git.baseAddr)
+              ?: throw NoProjectInfo()
+        } catch (e: YAMLException) {
+          throw ProjectBadlyFormatted(e.message ?: "Unable to parse incoming data")
+        }
 
     logger.info("Received for storage: {${project.importantInfo()}}")
     logger.debug(om.writeValueAsString(project))
@@ -118,7 +126,7 @@ class ProjectApiController: MeasuringService() {
   }
 
   @PostMapping(path = ["/project/{repoName}"], produces = [MediaType.APPLICATION_JSON_VALUE])
-  @ResponseStatus(CREATED)
+  @ResponseStatus(OK)
   fun postProject(@PathVariable repoName: String, @Valid @RequestBody projectStr: String): Map<String, Any> =
       postProject(repoName, "", projectStr)
 

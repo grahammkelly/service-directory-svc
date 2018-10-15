@@ -1,5 +1,7 @@
 package com.travelport.service.directory
 
+class ProjectBadlyFormatted(message: String): Exception(message)
+
 class NoProjectInfo: Exception()
 
 abstract class UnknownProject(message: String): Exception(message)

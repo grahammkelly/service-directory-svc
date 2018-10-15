@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${pageTitle}"/>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css" href="../static/css/main.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="https://cdn.rawgit.com/showdownjs/showdown/1.8.6/dist/showdown.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/codehighlighter.min.css}" type="text/css" href="../static/css/codehighlighter.min.css">
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Expose model data for subsequent external javascript -->
+    <script>
+        //Load the following from the model!
+        var model = {
+            pageTitle: "[[${pageTitle}]]",
+
+            //Load the following from the incoming model!
+            jenkinsAddress: "[[${jenkinsAddress}]]",
+            gitHost: "[[${gitHost}]]",
+
+            sonarHost: "[[${sonarHost}]]",
+            sonarProjectKey: "[[${sonarProjectKey}]]",
+            sonarCoverage: "[[${sonarCoverage}]]",
+
+            end: true   //Doesn't mean anything. Just added so I can add other entries with the trailing ','
+        };
+    </script>
+    <script type="text/javascript" th:src="@{/js/service-directory.js}" src="../static/js/service-directory.js"></script>
+</head>
+<body>
+    <div class="Container">
+        <div class="sidenav">
+            <h1>Projects</h1>
+            <div id="project-links"></div>
+        </div>
+
+        <div id="project" class="project">
+            <div id="project-name" class="project-name"></div>
+            <div id="project-body" class="project-body"></div>
+        </div>
+    </div>
+</body>
+</html>

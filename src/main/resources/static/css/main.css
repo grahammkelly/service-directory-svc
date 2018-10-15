@@ -78,16 +78,16 @@
 }
 
 .project-body h1 {
-    font-size: 18px;
+    font-size: 30px;
     font-weight: bold;
     background-color: lightyellow;
 }
 .project-body h2 {
-    font-size: 14px;
+    font-size: 24px;
     font-weight: bold;
 }
 .project-body h3 {
-    font-size: 14px;
+    font-size: 24px;
     font-style: italic;
 }
 
@@ -95,6 +95,15 @@
     font-size: 14px;
     font-weight: normal;
     font-style: normal;
+}
+
+.project-body pre {
+    font-size: 12px;
+    font-weight: light;
+    font-style: normal;
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+    color: white;
+    background-color: #333333;
 }
 
 

@@ -15,6 +15,7 @@ spring:
 
 service-directory:
   minimum-allocatable-id: 5000
+  jenkins-address: https://system-jenkins.build.mttnow.com
   git:
     baseAddr: http://bitbucket.org/mttnow/
 
