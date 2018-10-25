@@ -9,8 +9,8 @@ plugins {
   id "com.mttnow.build" version '1.0.13'
 }
 
-group = 'com.travelport.example'
-description = 'Demo of the System Team CI/CD process for a Spring Boot application written in Kotlin with Groovy/Spock tests'
+group = 'com.travelport.service.glossary'
+description = 'Glossary of Applications, Libraries and Applications developed'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 
