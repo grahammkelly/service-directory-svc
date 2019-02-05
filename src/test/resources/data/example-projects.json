@@ -1,6 +1,6 @@
 [
   {
-    "_class": "com.travelport.service.directory.model.ProjectInfo",
+    "_class": "com.travelport.service.glossary.model.ProjectInfo",
     "id": "1",
     "name": "test-project-01",
     "serviceCode": "tp1",
@@ -14,7 +14,7 @@
     }
   },
   {
-    "_class": "com.travelport.service.directory.model.ProjectInfo",
+    "_class": "com.travelport.service.glossary.model.ProjectInfo",
     "id": "2",
     "name": "upstream-project-01",
     "serviceCode": "up1",

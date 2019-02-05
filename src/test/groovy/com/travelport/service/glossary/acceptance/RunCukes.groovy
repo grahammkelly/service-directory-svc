@@ -13,7 +13,7 @@ import org.springframework.context.ConfigurableApplicationContext
 @CucumberOptions(
     strict = true,
     features = ["src/test/resources/features"],
-    glue = ["src/test/groovy/com/travelport/service/directory/acceptance/steps"],
+    glue = ["src/test/groovy/com/travelport/service/glossary/acceptance/steps"],
     tags = ["not @Ignore"]
 )
 class RunCukes {

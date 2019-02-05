@@ -50,7 +50,7 @@ class ProjectApiControllerIT extends Specification {
     await().atMost(2, TimeUnit.SECONDS).until({projectRepo.count()}, is(originalCount + 1))
 
     then:
-    response.statusCode == HttpStatus.CREATED
+    response.statusCode == HttpStatus.OK
     response.body.containsKey "id"
 
     def project = projectRepo.findById(response.body.id).get()

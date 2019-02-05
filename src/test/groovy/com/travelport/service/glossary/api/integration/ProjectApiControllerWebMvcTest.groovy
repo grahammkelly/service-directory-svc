@@ -1,11 +1,13 @@
 package com.travelport.service.glossary.api.integration
 
+import com.travelport.service.glossary.api.ExceptionHandler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.mock.web.MockHttpServletResponse
 import org.springframework.test.web.servlet.MockMvc
 
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -17,6 +19,7 @@ import com.travelport.service.glossary.model.ProjectInfo
 import com.travelport.service.glossary.service.ProjectService
 import org.joda.time.DateTime
 import org.spockframework.spring.SpringBean
+import org.springframework.web.servlet.ModelAndView
 import org.yaml.snakeyaml.Yaml
 import spock.lang.Specification
 
@@ -76,7 +79,7 @@ build:
         post("/api/project/${testProjectName}")
             .contentType("application/yaml").content(yamlPipelineWithProject)
             .accept(MediaType.APPLICATION_JSON)
-    ).andExpect(status().isCreated()).andReturn()
+    ).andExpect(status().isOk()).andReturn()
     Map<String, Object> respBody = om.readValue(result?.mockResponse?.content?.buf, Map)
 
     then: "expect that object is stored, and it's the object we're expecting"
@@ -111,19 +114,22 @@ build:
             .contentType("application/yaml").content(yamlPipilineNoProject)
             .accept(MediaType.APPLICATION_JSON)
     ).andExpect(status().isBadRequest()).andReturn()
-    def respBody = result.modelAndView.model
+    def mav = result?.modelAndView
+    def resp = result?.response
+    def apiError = new ObjectMapper().readValue(resp?.contentAsString, Map)
 
     then:
     0 * svc.save(_)
 
     and:
-    respBody.containsKey "apiError"
-    def apiError = respBody.apiError
-    apiError.status == HttpStatus.BAD_REQUEST
+    mav == null
+    resp != null
+    resp.status == HttpStatus.BAD_REQUEST.value()
+    apiError.status == HttpStatus.BAD_REQUEST.name()
     (apiError.error as String).toLowerCase().contains "no project"
     apiError.url == reqUrl
     apiError.timeStamp != null
-    (apiError.timeStamp as DateTime).isAfter(instantBeforeStart)
+    DateTime.parse(apiError.timeStamp) > instantBeforeStart
 
   }
 
@@ -151,16 +157,15 @@ build:
         .accept(MediaType.APPLICATION_JSON))
         .andReturn()
 
-    def resp = result.modelAndView.model
+    def apiError = new ObjectMapper().readValue(result?.response?.contentAsString, Map)
 
     then:
     1 * svc.getId(testId) >> null
 
     and:
     result.response.status == HttpStatus.NOT_FOUND.value()
-    resp.containsKey "apiError"
-    resp.apiError.status == HttpStatus.NOT_FOUND
-    resp.apiError.url.endsWith("/api/project/${testId}")
+    apiError.status == HttpStatus.NOT_FOUND.name()
+    apiError.url.endsWith("/api/project/${testId}")
   }
 
   def "GET Should return NOT_FOUND if project name does not exist"() {
@@ -170,16 +175,15 @@ build:
         .accept(MediaType.APPLICATION_JSON))
         .andReturn()
 
-    def resp = result.modelAndView.model
+    def apiError = new ObjectMapper().readValue(result?.response?.contentAsString, Map)
 
     then:
     1 * svc.getProjectNamed(testProjectName) >> null
 
     and:
     result.response.status == HttpStatus.NOT_FOUND.value()
-    resp.containsKey "apiError"
-    resp.apiError.status == HttpStatus.NOT_FOUND
-    resp.apiError.url.endsWith("/api/project/${testProjectName}")
+    apiError.status == HttpStatus.NOT_FOUND.name()
+    apiError.url.endsWith("/api/project/${testProjectName}")
   }
 
   def "DELETE for a non existent project id should return NOT_FOUND"() {

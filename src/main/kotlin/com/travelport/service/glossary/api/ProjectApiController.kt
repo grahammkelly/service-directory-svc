@@ -101,7 +101,9 @@ class ProjectApiController: MeasuringService() {
 
     val project =
         try {
-          yamlMapper.loadAs(projectStr, Incoming::class.java)?.projectInfo?.cleanUp(repoName, cfg.git.baseAddr)
+          val incomingYaml = yamlMapper.loadAs(projectStr, Incoming::class.java)
+          val projectInfo = incomingYaml?.projectInfo
+          projectInfo?.cleanUp(repoName, cfg.git.baseAddr)
               ?: throw NoProjectInfo()
         } catch (e: YAMLException) {
           throw ProjectBadlyFormatted(e.message ?: "Unable to parse incoming data")
