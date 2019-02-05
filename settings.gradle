@@ -6,4 +6,4 @@ pluginManagement {
   }
 }
 
-rootProject.name = 'service-directory'
+rootProject.name = 'service-glossary'
