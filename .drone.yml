@@ -1,0 +1,14 @@
+kind: pipeline
+name: default
+
+steps:
+- name: compile
+  image: gradle:jdk10
+  commands:
+  - gradle stageCompile
+
+- name: test
+  image: gradle:jdk10
+  commands:
+  - gradle stageTest
+
