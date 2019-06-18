@@ -12,3 +12,6 @@ steps:
   commands:
   - gradle stageTest
 
+trigger:
+  event:
+  - push
