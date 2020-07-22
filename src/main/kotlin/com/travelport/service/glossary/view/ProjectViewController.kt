@@ -14,7 +14,7 @@ class ProjectViewController {
   private val log = LoggerFactory.getLogger(ProjectViewController::class.java)
 
   @Autowired private lateinit var cfg: ServiceGlossaryConfiguration
-  @Autowired private lateinit var sonarSvc: SonarQueryService
+//  @Autowired private lateinit var sonarSvc: SonarQueryService
 
   @GetMapping(value = ["/", "/index"], produces = [MediaType.TEXT_HTML_VALUE])
   fun index(model: Model): String {
@@ -22,9 +22,7 @@ class ProjectViewController {
         "pageTitle" to  cfg.serviceName
         , "jenkinsAddress" to cfg.jenkinsAddress
         , "gitHost" to cfg.git.baseAddr.replace("https?://".toRegex(), "").replace("/$".toRegex(), "")
-        , "sonarHost" to cfg.sonar.baseAddress
-        , "sonarProjectKey" to "com.mttnow.itinerary.pnrindex:pnrindex-converter"
-        , "sonarCoverage" to sonarSvc.getCoveragePercent("com.mttnow.itinerary.pnrindex:pnrindex-converter")
+        , "sonarHost" to cfg.sonar.baseAddr
     ))
     return "index.html"
   }

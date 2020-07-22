@@ -16,6 +16,8 @@ spring:
 service-glossary:
   minimum-allocatable-id: 5000
   jenkins-address: https://system-jenkins.build.mttnow.com
+  sonar:
+    baseAddr: https://system-sonarqube.build.mttnow.com
   git:
     baseAddr: http://bitbucket.org/mttnow/
 

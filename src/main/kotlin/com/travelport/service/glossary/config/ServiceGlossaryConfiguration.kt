@@ -21,7 +21,7 @@ data class GitInfo (
 data class SonarInfo(
   var username: String = "jenkins",
   var passwd: String = "jenkins",
-  var baseAddress: String = "http://sonar2.int.build.mttnow.com"
+  var baseAddr: String = "http://sonar2.int.build.mttnow.com"
 )
 
 data class NetworkConfig(

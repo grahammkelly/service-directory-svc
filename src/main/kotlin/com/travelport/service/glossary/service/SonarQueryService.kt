@@ -15,7 +15,7 @@ class SonarQueryService {
   @Autowired private lateinit var restTemplate: RestTemplate
 
   private val metricsQry: String by lazy {
-    "${cfg.sonar.baseAddress.replace("/$".toRegex(), "")}/api/measures/component"
+    "${cfg.sonar.baseAddr.replace("/$".toRegex(), "")}/api/measures/component"
   }
 
   fun getCoveragePercent(projectKey: String?): Float? {

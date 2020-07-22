@@ -1,5 +1,6 @@
 package com.travelport.service.glossary.model
 
+import com.travelport.service.glossary.api.ProjectDesc
 import com.travelport.service.glossary.model.enums.ProjectType
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -25,7 +26,10 @@ open class ProjectInfo @JvmOverloads constructor(
     var related: RelatedLinks = RelatedLinks(),
     var repository: String? = null,
     var product: String = "core",
-    var serviceCode: String = ""
+    var serviceCode: String = "",
+    var buildJob: String = "",
+    var buildBadge: String = "",
+    var artifactId: String = "com.travelport"
 ) {
 
   //
@@ -40,15 +44,13 @@ open class ProjectInfo @JvmOverloads constructor(
   //  ```
   //
 
-  fun cleanUp(repoName: String, gitBaseAddr: String): ProjectInfo {
+  fun cleanUp(repoName: String, gitBaseAddr: String, jenkinsBaseAddr: String, projectMetaInfo: ProjectDesc): ProjectInfo {
     displayName = displayName ?: repoName
     name = repoName
-    type = try {
-      ProjectType.fromString(type).toString()
-    } catch (e: IllegalArgumentException) {
-      ""
-    }
+    type = projectMetaInfo.projectType.toString()
     repository = gitBaseAddr + repoName
+    buildJob =  "${jenkinsBaseAddr}/${projectMetaInfo.jenkinsLinkFragment}/job/${repoName}/job/master/"
+    buildBadge = "${jenkinsBaseAddr}/buildStatus/icon?job=${projectMetaInfo.jenkinsBuildBadgeJob}/${repoName}/master"
 
     return this
   }

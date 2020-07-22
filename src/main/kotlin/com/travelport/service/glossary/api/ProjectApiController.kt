@@ -102,8 +102,10 @@ class ProjectApiController: MeasuringService() {
     val project =
         try {
           val incomingYaml = yamlMapper.loadAs(projectStr, Incoming::class.java)
+
+          val projectDesc = incomingYaml?.project ?: ProjectDesc()
           val projectInfo = incomingYaml?.projectInfo
-          projectInfo?.cleanUp(repoName, cfg.git.baseAddr)
+          projectInfo?.cleanUp(repoName, cfg.git.baseAddr, cfg.jenkinsAddress, projectDesc)
               ?: throw NoProjectInfo()
         } catch (e: YAMLException) {
           throw ProjectBadlyFormatted(e.message ?: "Unable to parse incoming data")
@@ -161,7 +163,7 @@ class ProjectApiController: MeasuringService() {
   }
 
   private fun <T> logAndReturn(action: String, returnObject: T, lvl: Level = DEBUG): T {
-    fun message() = "${action}: ${om.writeValueAsString(returnObject)}"
+    fun message() = "${action}: ${om.writerWithDefaultPrettyPrinter().writeValueAsString(returnObject)}"
     when {
       (lvl == INFO && logger.isInfoEnabled) -> logger.info(message())
       (lvl == DEBUG && logger.isDebugEnabled) -> logger.debug(message())
@@ -171,6 +173,7 @@ class ProjectApiController: MeasuringService() {
   }
 
   class Incoming(
+      var project: ProjectDesc?= null,
       var projectInfo: ProjectInfo? = null
   )
 }

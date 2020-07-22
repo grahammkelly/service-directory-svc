@@ -181,27 +181,51 @@ var displayProjectDetails = function(projectBody, projectInfo) {
 
         var badges = {};
 
-        var jenkinsJob = model.jenkinsAddress + "/job/" + projectName + "/job/master/";
+        var jenkinsJob = projectInfo.buildJob
         badges[jenkinsJob] = {
-            icon: model.jenkinsAddress + "/buildStatus/icon?job=" + projectName + "/master/",
-            altText: "Build not generated via CI process"
+            icon: projectInfo.buildBadge,
+            altText: "Build information",
+            ownPara: true
         };
 
-        var sonarLink = model.sonarHost + "/overview?id=" + encodeURIComponent(model.sonarProjectKey);
-        badges[sonarLink] = {
-            icon: model.sonarHost + "/api/badges/measure?key=" + encodeURIComponent(model.sonarProjectKey) + "&metric=coverage",
-            altText: "Need to install the Sonar badges plugin"
+        var badgeKeys = {
+            "Overall": "alert_status",
+            "Coverage": "coverage",
+            "Maintainabilty": "sqale_rating",
+            "Reliability": "reliability_rating",
+            "Security Rating": "security_rating"
         };
-
-        var link;
-        for (link in badges) {
-            console.log(link + ": " + JSON.stringify(badges[link]));
-            if (badges.hasOwnProperty(link)) {
-                var badge = badges[link];
-                jobStatusDiv.innerHTML +=
-                    "<p><a href=\"" + link + "\"><img src=\"" + badge.icon + "\" alt=\"" + String(badge.altText) + "\"/></a></p>";
+        var encodedSonarKey = encodeURIComponent(projectInfo.artifactId + ":" + projectInfo.name);
+        var badgeBase = model.sonarHost + "/api/project_badges/measure?project=" + encodedSonarKey + "&metric="
+        var sonarLink = model.sonarHost + "/dashboard?id=" +encodedSonarKey;
+        Object.keys(badgeKeys).forEach(function(key, index) {
+            badges["sonar-" + index] = {
+                link: sonarLink,
+                icon: badgeBase + this[key],
+                altText: "No " + key + " badge available",
+                ownPara: false
             }
-        }
+        }, badgeKeys);
+
+        Object.keys(badges).forEach(function(key, idx) {
+            // console.log(key + ": " + JSON.stringify(badges[key]));
+
+            var badgeIcon = badges[key].icon;
+            var altText = badges[key].altText;
+            var badgeTarget;
+            if (badges[key].hasOwnProperty("link")) {
+                badgeTarget = badges[key].link;
+            } else {
+                badgeTarget = key;
+            }
+
+            var aref = "<a href=\"" + badgeTarget + "\"><img src=\"" + badgeIcon + "\" alt=\"" + altText + "\"/></a>"
+            if (badges[key].ownPara) {
+                jobStatusDiv.innerHTML += "<p>" + aref + "</p>"
+            } else {
+                jobStatusDiv.innerHTML += aref + "&nbsp;"
+            }
+        }, badges);
     };
 
     var displayProjectTestCoverage = function(outerDiv) {
@@ -236,7 +260,6 @@ var displayProjectDetails = function(projectBody, projectInfo) {
         displayProjectBadges(basicInfoDiv, projectInfo.name);
         displayProjectTestCoverage(basicInfoDiv);
         displayProjectDescription(basicInfoDiv);
-
 
         return basicInfoDiv;
     };
